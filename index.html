@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,9 +29,13 @@
             justify-content: center;
             align-items: center;
             border: 5px solid black; /* Increased border thickness */
-            font-size: 6vw; /* Dynamic font size based on viewport width */
+            font-size: 6vw; /* Default font size */
             font-weight: bold;
             text-align: center;
+        }
+        .token-number {
+            font-size: 28vw; /* Token number is twice as large */
+            font-weight: bold;
         }
     </style>
 </head>
@@ -38,7 +43,7 @@
     <div id="data-display">Loading...</div>
 
     <script>
-        const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=DMhLCeEyyDl5NhVZyYq9mYhfZWxpQkrlUPiRNHACfNtIRArEPqi-QXLjIRL9O03qkauZT8SnWZk0eb9G4HlmqZDbOIbM8-Lym5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnLAKA6WrGpbsvroo3HeSXeKGcUMybyK_BLiGxSicz6zI2wCBGSlxhdfKQ5jdE8OlQUQ5KDFOYILgBhTWeY57wCuSmQqOgz05wg&lib=MBtb2n21yH0D_q9XTtmkL578Ms0zKp9nj";
+        const apiUrl = "https://script.google.com/macros/s/AKfycbwIj0z_3R11nLUiH4gJ_Gbv9R61sFI6ehBuDxIJacTAreUaUMWDxDrBONzE7njJlO2t/exec";
 
         function fetchData() {
             fetch(apiUrl)
@@ -62,7 +67,7 @@
         function displayData(data) {
             let content = `<p>${data.doctor_name}</p>`;
             content += `<p>Token Number</p>`;
-            content += `<p>${data.token_number}</p>`;
+            content += `<p class="token-number">${data.token_number}</p>`; // Increased font size for token number
 
             // Display "Origin" only if it's not empty
             if (data.origin && data.origin.trim() !== "") {
@@ -74,7 +79,7 @@
 
         // Fetch data initially and refresh every 30 seconds
         fetchData();
-        setInterval(fetchData, 30000);
+        setInterval(fetchData, 10000);
     </script>
 </body>
 </html>
