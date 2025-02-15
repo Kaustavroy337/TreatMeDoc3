@@ -1,83 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Sheets Data Display</title>
-  <style>
-    body { 
-      background-color: lightblue; 
-      font-family: Arial, sans-serif; 
-      margin: 20px; /* Move content away from edges */
-    }
-    .data-container {
-      display: inline-block;
-      font-size: 24px;
-      font-weight: bold;
-      background: white;
-      padding: 20px;
-      border: 2px solid black;
-      border-radius: 10px;
-      text-align: center; /* Center align text inside the box */
-    }
-    .data-item {
-      margin: 10px 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Queue Data</title>
+    <style>
+        body {
+            background-color: lightblue;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: flex-start; /* Align box to the left */
+            align-items: flex-start; /* Align to the top */
+            height: 100vh;
+            padding: 20px;
+        }
+        #data-display {
+            background: white;
+            padding: 20px;
+            border: 2px solid black; /* Added black border */
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            font-size: 25px;
+            font-weight: bold;
+            text-align: center; /* Center align text */
+        }
+    </style>
 </head>
 <body>
-  <div class="data-container" id="data-display">
-    <p>Loading...</p>
-  </div>
+    <div id="data-display">Loading...</div>
 
-  <script>
-    const apiUrl = "https://script.google.com/macros/s/AKfycbwIj0z_3R11nLUiH4gJ_Gbv9R61sFI6ehBuDxIJacTAreUaUMWDxDrBONzE7njJlO2t/exec;
+    <script>
+        const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=DMhLCeEyyDl5NhVZyYq9mYhfZWxpQkrlUPiRNHACfNtIRArEPqi-QXLjIRL9O03qkauZT8SnWZk0eb9G4HlmqZDbOIbM8-Lym5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnLAKA6WrGpbsvroo3HeSXeKGcUMybyK_BLiGxSicz6zI2wCBGSlxhdfKQ5jdE8OlQUQ5KDFOYILgBhTWeY57wCuSmQqOgz05wg&lib=MBtb2n21yH0D_q9XTtmkL578Ms0zKp9nj";
 
-    function fetchData() {
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-          console.log("Fetched Data:", data); // Debugging: Log full response
-          displayData(data);
-        })
-        .catch(error => {
-          console.error("Error fetching data:", error);
-          document.getElementById("data-display").innerHTML = "<p>Error loading data</p>";
-        });
-    }
+        function fetchData() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched Data:", data); // Debugging: Log API response
 
-    function displayData(data) {
-      const container = document.getElementById("data-display");
-      container.innerHTML = ""; // Clear previous content
+                    if (data.length === 0) {
+                        document.getElementById("data-display").innerHTML = "<p>No Data Available</p>";
+                        return;
+                    }
 
-      if (!Array.isArray(data) || data.length === 0) {
-        container.innerHTML = "<p>No data available</p>";
-        return;
-      }
+                    displayData(data[0]); // Display first object in response
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    document.getElementById("data-display").innerHTML = "<p>Error loading data</p>";
+                });
+        }
 
-      const firstRow = data[0]; // Extract first object
+        function displayData(data) {
+            let content = `<p>${data.doctor_name}</p>`;
+            content += `<p>Token Number</p>`;
+            content += `<p>${data.token_number}</p>`;
 
-      // Mapping values based on your requested order
-      const valuesToDisplay = [
-        firstRow["doctor_name"] || "N/A",  // DR AKSHAY PATIL
-        "Token Number",                     // Static label
-        firstRow["token_number"] || "N/A",  // 6
-        firstRow["origin"]          // no show
-      ];
+            // Display "Origin" only if it's not empty
+            if (data.origin && data.origin.trim() !== "") {
+                content += `<p>${data.origin}</p>`;
+            }
 
-      valuesToDisplay.forEach(value => {
-        let item = document.createElement("p");
-        item.className = "data-item";
-        item.textContent = value;
-        container.appendChild(item);
-      });
-    }
+            document.getElementById("data-display").innerHTML = content;
+        }
 
-    fetchData(); // Load data when the page loads
-    setInterval(fetchData, 100000); // Refresh every 30 seconds
-  </script>
+        // Fetch data initially and refresh every 30 seconds
+        fetchData();
+        setInterval(fetchData, 30000);
+    </script>
 </body>
 </html>
-
-
-
